@@ -39,75 +39,75 @@ class _LocationState extends State<Location>{
       child: Scaffold(
           body: (currentPosition != null || currentPosition.latitude != null)
               ? Consumer<List<Place>>(
-                  builder: (_,places, __) {
-                    var markers = (places != null)
-                        ? markerService.getMarkers(places)
-                        : List<Marker>();
-                    return (places != null) ? Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: <Widget>[
-                          GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                                target: (currentPosition.latitude != null)
-                                    ? LatLng(currentPosition.latitude,currentPosition.longitude)
-                                    : Center(child: CircularProgressIndicator(),),
-                                zoom:16.0,
-                            ),
-                            mapType: MapType.normal,
-                            zoomGesturesEnabled: true,
-                            markers: Set<Marker>.of(markers),
-                            //{if(_currentPosition != null) _currentPosition},
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height/3,
-                            child: Expanded(
-                              child: ListView.builder(
-                                itemCount: places.length,
-                                itemBuilder: (context,index){
-                                  return FutureProvider(
-                                    create: (context) => geoService.getDistance(
-                                        currentPosition.latitude,
-                                        currentPosition.longitude,
-                                        places[index].geometry.location.lat,
-                                        places[index].geometry.location.lng
-                                    ),
-                                      child: Card(
-                                        child: ListTile(
-                                          title: Text(places[index].name),
-                                          subtitle: Column(
+            builder: (_,places, __) {
+              var markers = (places != null)
+                  ? markerService.getMarkers(places)
+                  : List<Marker>();
+              return (places != null) ? Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: <Widget>[
+                    GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: (currentPosition.latitude != null)
+                            ? LatLng(currentPosition.latitude,currentPosition.longitude)
+                            : Center(child: CircularProgressIndicator(),),
+                        zoom:16.0,
+                      ),
+                      mapType: MapType.normal,
+                      zoomGesturesEnabled: true,
+                      markers: Set<Marker>.of(markers),
+                      //{if(_currentPosition != null) _currentPosition},
+                    ),
+                    Container(
+                        height: MediaQuery.of(context).size.height/3,
+                        child: Expanded(
+                          child: ListView.builder(
+                            itemCount: places.length,
+                            itemBuilder: (context,index){
+                              return FutureProvider(
+                                  create: (context) => geoService.getDistance(
+                                      currentPosition.latitude,
+                                      currentPosition.longitude,
+                                      places[index].geometry.location.lat,
+                                      places[index].geometry.location.lng
+                                  ),
+                                  child: Card(
+                                    child: ListTile(
+                                      title: Text(places[index].name),
+                                      subtitle: Column(
+                                        children: <Widget>[
+                                          ( places[index].rating != null ) ? Row(
                                             children: <Widget>[
-                                              ( places[index].rating != null ) ? Row(
-                                                children: <Widget>[
-                                                  RatingBarIndicator(
-                                                    rating: places[index].rating,
-                                                    itemBuilder: (context, index) => Icon(Icons.star, color: Colors.amber),
-                                                    itemCount: 5,
-                                                    itemSize: 10.0,
-                                                    direction: Axis.horizontal,
-                                                  )
-                                                ],
-                                              ) : Row() ,
-                                              Consumer<double>(
-                                                builder:  (context, meters, widget){
-                                                  return (meters != null)
-                                                      ? Text('${places[index].vicinity} \u00b7 ${(meters/1609).round()} mils')
-                                                      : Container();
-                                                },
+                                              RatingBarIndicator(
+                                                rating: places[index].rating,
+                                                itemBuilder: (context, index) => Icon(Icons.star, color: Colors.amber),
+                                                itemCount: 5,
+                                                itemSize: 10.0,
+                                                direction: Axis.horizontal,
                                               )
                                             ],
-                                          ),
-                                          trailing: IconButton(
-                                            icon: Icon(Icons.directions),
-                                            color:  Theme.of(context).primaryColor,
-                                            onPressed: (){
-                                              _launchMapsUrl(places[index].geometry.location.lat, places[index].geometry.location.lng);
+                                          ) : Row() ,
+                                          Consumer<double>(
+                                            builder:  (context, meters, widget){
+                                              return (meters != null)
+                                                  ? Text('${places[index].vicinity} \u00b7 ${(meters/1609).round()} mils')
+                                                  : Container();
                                             },
-                                          ),
+                                          )
+                                        ],
+                                      ),
+                                      trailing: IconButton(
+                                        icon: Icon(Icons.directions),
+                                        color:  Theme.of(context).primaryColor,
+                                        onPressed: (){
+                                          _launchMapsUrl(places[index].geometry.location.lat, places[index].geometry.location.lng);
+                                        },
+                                      ),
 
-                                          /*ElevatedButton(
+                                      /*ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               primary: Colors.white,
                                               onPrimary: Colors.white,
@@ -122,17 +122,17 @@ class _LocationState extends State<Location>{
                                                 ? Icon(Icons.favorite_border, color: Colors.black,)
                                                 : Icon(Icons.favorite, color:Colors.black,),
                                           ),*/
-                                        ),
-                                      )
-                                  );
-                                  },
-                              ),
-                            )
+                                    ),
+                                  )
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                    ) : Center(child: CircularProgressIndicator(),);
-                    },
+                        )
+                    ),
+                  ],
+                ),
+              ) : Center(child: CircularProgressIndicator(),);
+            },
           ): Center(child: CircularProgressIndicator(),)
       ),
     );

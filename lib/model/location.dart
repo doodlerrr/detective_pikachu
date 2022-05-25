@@ -7,4 +7,6 @@ class Location{
   Location.fromJson(Map<dynamic,dynamic> parsedJson)
       :lat = parsedJson['lat'],
         lng = parsedJson['lng'];
+
+
 }

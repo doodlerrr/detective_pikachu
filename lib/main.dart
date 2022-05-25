@@ -1,14 +1,20 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
-import 'package:detective_pikachu/widget/tab_bar.dart';
-import 'package:detective_pikachu/screen/description_screen.dart';
-import 'package:detective_pikachu/screen/location_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:detective_pikachu/widget/tab_bar.dart';
+import 'package:detective_pikachu/screen/location_screen.dart';
 import 'package:detective_pikachu/service/geolocator_service.dart';
 import 'package:detective_pikachu/model/place.dart';
 import 'package:detective_pikachu/service/places_service.dart';
+import 'package:detective_pikachu/model/favorite_list_models.dart';
+import 'package:detective_pikachu/model/favorite_page_models.dart';
+import 'package:detective_pikachu/screen/favorite_list.dart';
+import 'package:detective_pikachu/screen/favorite_page.dart';
+import 'package:detective_pikachu/model/favorite_place_page.dart';
 import 'package:detective_pikachu/screen/favorite_screen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -24,6 +30,7 @@ class _MyAppState extends State<MyApp>{
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // place
         FutureProvider(create: (context) => locatorService.getLocation()),
         ProxyProvider<Position,Future<List<Place>>>(
           update: (context,position,places){
@@ -31,15 +38,34 @@ class _MyAppState extends State<MyApp>{
                 ? placeService.getPlaces(position.latitude, position.longitude)
                 : null;
           },
-        )
+        ),
+
+        Provider(create: (context) => FavoriteListModel(),),
+        ChangeNotifierProxyProvider<FavoriteListModel, FavoritePageModel>(
+          create: (context) => FavoritePageModel(),
+          update: (context, favoritelist, favoritepage) {
+            if (favoritepage == null)
+              throw ArgumentError.notNull('favoritePage');
+            favoritepage.favoritelist = favoritelist;
+            return favoritepage;
+            },
+        ),
+
       ],
-      child:MaterialApp(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Detective Pikachu',
         theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Colors.black,
         ),
-        debugShowCheckedModeBanner: false,
+        /*
+        initialRoute: '/',
+        routes: {
+          '/': (context) => FavoriteList(),
+          '/favoritepage': (context) => FavoritePage(),
+        },
+        */
         home: DefaultTabController(
             length: 4,
             child: Scaffold(
@@ -47,9 +73,9 @@ class _MyAppState extends State<MyApp>{
                 physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   Location(),
-                  Description(),
-                  Favorite(),
-                  Container(child: Center(child: Text('4'))),
+                  FavoriteList(),
+                  FavoritePage(),
+                  Container(child: Center(child : Text('4'))),
                 ],
               ),
               bottomNavigationBar: BottomBar(),
