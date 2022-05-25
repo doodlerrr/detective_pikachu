@@ -1,6 +1,6 @@
 # detective_pikachu
 
-A new Flutter project.
+포켓몬 빵을 찾아라!
 
 ## Getting Started
 
