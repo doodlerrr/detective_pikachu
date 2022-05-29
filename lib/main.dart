@@ -7,13 +7,10 @@ import 'package:detective_pikachu/screen/location_screen.dart';
 import 'package:detective_pikachu/service/geolocator_service.dart';
 import 'package:detective_pikachu/model/place.dart';
 import 'package:detective_pikachu/service/places_service.dart';
-import 'package:detective_pikachu/model/favorite_list_models.dart';
-import 'package:detective_pikachu/model/favorite_page_models.dart';
-import 'package:detective_pikachu/screen/favorite_list.dart';
-import 'package:detective_pikachu/screen/favorite_page.dart';
-import 'package:detective_pikachu/model/favorite_place_page.dart';
 import 'package:detective_pikachu/screen/favorite_screen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:detective_pikachu/screen/second_screen.dart';
+import 'package:detective_pikachu/screen/fourth_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,7 +22,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp>{
   final locatorService = GeoLocatorService();
   final placeService = PlacesService();
-
+  List<String> savedWords = List<String>();
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -38,17 +35,6 @@ class _MyAppState extends State<MyApp>{
                 ? placeService.getPlaces(position.latitude, position.longitude)
                 : null;
           },
-        ),
-
-        Provider(create: (context) => FavoriteListModel(),),
-        ChangeNotifierProxyProvider<FavoriteListModel, FavoritePageModel>(
-          create: (context) => FavoritePageModel(),
-          update: (context, favoritelist, favoritepage) {
-            if (favoritepage == null)
-              throw ArgumentError.notNull('favoritePage');
-            favoritepage.favoritelist = favoritelist;
-            return favoritepage;
-            },
         ),
 
       ],
@@ -66,6 +52,7 @@ class _MyAppState extends State<MyApp>{
           '/favoritepage': (context) => FavoritePage(),
         },
         */
+
         home: DefaultTabController(
             length: 4,
             child: Scaffold(
@@ -73,9 +60,9 @@ class _MyAppState extends State<MyApp>{
                 physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   Location(),
-                  FavoriteList(),
-                  FavoritePage(),
-                  Container(child: Center(child : Text('4'))),
+                  SecondPage(),
+                  FavoriteWordsRoute(favoriteItems: []),
+                  FourthApp()
                 ],
               ),
               bottomNavigationBar: BottomBar(),

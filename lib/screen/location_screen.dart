@@ -12,14 +12,16 @@ import 'package:detective_pikachu/model/location.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:detective_pikachu/service/marker_service.dart';
-
-class Location extends StatefulWidget {
+import 'package:favorite_button/favorite_button.dart';
+import 'package:detective_pikachu/screen/favorite_screen.dart';
+import 'package:badges/badges.dart';
+class Location extends StatefulWidget{
   _LocationState createState() => _LocationState();
 }
 
 class _LocationState extends State<Location>{
+  List<String> savedWords = List<String>();
 
-  bool like = false;
   @override
   Widget build(BuildContext context) {
 
@@ -37,6 +39,28 @@ class _LocationState extends State<Location>{
     return FutureProvider(
       create:(context) => placesProvider,
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.yellow,
+          foregroundColor: Colors.black,
+          elevation: 0,
+
+          title: Text(
+            'Pokemon',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          actions: <Widget>[
+            Badge(
+              badgeContent : Text('${savedWords.length}', style: TextStyle(color: Colors.white),),
+              child: IconButton(
+                icon: Icon(Icons.favorite),
+                onPressed: () => pushToFavoriteWordsRoute(context),
+              ),
+              badgeColor: Colors.black,
+              position: BadgePosition.topEnd(top: 3, end: 2),
+              animationType: BadgeAnimationType.scale,
+            )
+          ],
+        ), 
           body: (currentPosition != null || currentPosition.latitude != null)
               ? Consumer<List<Place>>(
             builder: (_,places, __) {
@@ -66,7 +90,10 @@ class _LocationState extends State<Location>{
                         child: Expanded(
                           child: ListView.builder(
                             itemCount: places.length,
-                            itemBuilder: (context,index){
+                            itemBuilder: (context ,index){
+                              String word = places[index].name;
+                              bool isSaved = savedWords.contains(word); // true/false
+
                               return FutureProvider(
                                   create: (context) => geoService.getDistance(
                                       currentPosition.latitude,
@@ -99,29 +126,35 @@ class _LocationState extends State<Location>{
                                           )
                                         ],
                                       ),
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.directions),
-                                        color:  Theme.of(context).primaryColor,
-                                        onPressed: (){
-                                          _launchMapsUrl(places[index].geometry.location.lat, places[index].geometry.location.lng);
-                                        },
+                                      trailing: Container(
+                                          child: Row(
+                                            mainAxisSize : MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: Icon(Icons.directions),
+                                                color:  Theme.of(context).primaryColor,
+                                                onPressed: (){
+                                                  _launchMapsUrl(places[index].geometry.location.lat, places[index].geometry.location.lng);
+                                                  },
+                                              ),
+                                              IconButton(
+                                                icon :(isSaved)
+                                                    ? Icon(Icons.favorite)
+                                                    : Icon(Icons.favorite_border),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (isSaved) {
+                                                      savedWords.remove(word);
+                                                    } else {
+                                                      savedWords.add(word);
+                                                    }
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
                                       ),
-
-                                      /*ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Colors.white,
-                                              onPrimary: Colors.white,
-                                              shadowColor: Colors.white,
-                                            ),
-                                            onPressed: (){
-                                              setState(() {
-                                                like = !like;
-                                              });
-                                              },
-                                            child:(like == false)
-                                                ? Icon(Icons.favorite_border, color: Colors.black,)
-                                                : Icon(Icons.favorite, color:Colors.black,),
-                                          ),*/
                                     ),
                                   )
                               );
@@ -146,4 +179,10 @@ class _LocationState extends State<Location>{
     }
   }
 
+  Future pushToFavoriteWordsRoute(context) {
+    return Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (context) => FavoriteWordsRoute(favoriteItems: savedWords))
+    );
+  }
 }

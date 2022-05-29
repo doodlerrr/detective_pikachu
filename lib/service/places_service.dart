@@ -13,7 +13,7 @@ class PlacesService {
   Future<List<Place>> getPlaces(double lat, double lng) async {
     var response = await http.get(
         Uri.parse(
-            'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&type=$types1&rankby=distance&key=$key'));
+            'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&type=$types2&rankby=distance&key=$key'));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'] as List;
     return jsonResults.map((place) => Place.fromJson(place)).toList();
