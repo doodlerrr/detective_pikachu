@@ -1,5 +1,4 @@
 # detective_pikachu
-
 포켓몬 빵을 찾아라!
 
 ## 프로그램 개요 및 설명
