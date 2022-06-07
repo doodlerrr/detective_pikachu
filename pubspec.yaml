@@ -11,9 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+
   cupertino_icons: ^1.0.2
+  flutter_native_splash: ^2.0.1+1
   http: ^0.13.3
   dio: ^4.0.0
   flutter_polyline_points: ^0.2.6
@@ -23,27 +23,24 @@ dependencies:
   url_launcher: ^5.4.2
   flutter_rating_bar: ^3.0.1+1
   bottom_drawer: ^0.0.5
-  flutter_native_splash: ^2.0.5
   favorite_button: ^0.0.3
-  english_words: ^3.1.5
   badges: ^1.1.1
   carousel_slider: ^4.1.1
-  location: ^4.3.0
+  dcdg: ^4.0.1
+
+# Run commands to generate splash screen
+# 1) flutter clean
+# 2) flutter pub get
+# 3) flutter pub run flutter_native_splash:create
+flutter_native_splash:
+    color: "#FEEB70" # yellow
+    image: images/splash1.png
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^1.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter.
 flutter:
 
   # The following line ensures that the Material Icons font is
@@ -53,6 +50,7 @@ flutter:
   assets:
     - images/p.png
     - images/no.png
+    - images/splash1.png
     - images/bread/cake.png
     - images/bread/cheese.png
     - images/bread/cream.png
@@ -74,10 +72,7 @@ flutter:
     - images/seal/Slowbro.png
     - images/seal/Snorlax.png
     - images/seal/Squirtle.png
-flutter_native_splash:
-  color: "#42a5f5"
-  background_image: images/splash.png
-  fullscreen: true
+
 
   # To add assets to your application, add an assets section, like this:
 

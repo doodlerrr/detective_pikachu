@@ -15,13 +15,27 @@ import 'package:detective_pikachu/service/marker_service.dart';
 import 'package:favorite_button/favorite_button.dart';
 import 'package:detective_pikachu/screen/favorite_screen.dart';
 import 'package:badges/badges.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:detective_pikachu/.env.dart';
+import 'package:detective_pikachu/model/place.dart';
+import 'package:detective_pikachu/model/geometry.dart';
+
 class Location extends StatefulWidget{
   _LocationState createState() => _LocationState();
 }
 
 class _LocationState extends State<Location>{
   List<String> savedWords = List<String>();
+  Set<Polyline> _polylines = Set<Polyline>();
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints;
 
+  @override
+  void initState() {
+    super.initState();
+    polylinePoints = PolylinePoints();
+
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -35,6 +49,7 @@ class _LocationState extends State<Location>{
     );
     final geoService = GeoLocatorService();
     final markerService = MarkerService();
+    //final List<Place> places = [];
 
     return FutureProvider(
       create:(context) => placesProvider,
@@ -43,14 +58,16 @@ class _LocationState extends State<Location>{
           backgroundColor: Colors.yellow,
           foregroundColor: Colors.black,
           elevation: 0,
-
           title: Text(
             'Pokemon',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: <Widget>[
             Badge(
-              badgeContent : Text('${savedWords.length}', style: TextStyle(color: Colors.white),),
+              badgeContent : Text(
+                '${savedWords.length}',
+                style: TextStyle(color: Colors.white),
+              ),
               child: IconButton(
                 icon: Icon(Icons.favorite),
                 onPressed: () => pushToFavoriteWordsRoute(context),
@@ -61,8 +78,7 @@ class _LocationState extends State<Location>{
             )
           ],
         ), 
-          body: (currentPosition != null || currentPosition.latitude != null)
-              ? Consumer<List<Place>>(
+          body: (currentPosition != null || currentPosition.latitude != null) ? Consumer<List<Place>>(
             builder: (_,places, __) {
               var markers = (places != null)
                   ? markerService.getMarkers(places)
@@ -75,14 +91,47 @@ class _LocationState extends State<Location>{
                   children: <Widget>[
                     GoogleMap(
                       initialCameraPosition: CameraPosition(
-                        target: (currentPosition.latitude != null)
+                         target: (currentPosition.latitude != null)
                             ? LatLng(currentPosition.latitude,currentPosition.longitude)
                             : Center(child: CircularProgressIndicator(),),
-                        zoom:16.0,
+                        zoom: 16.0,
                       ),
+                      myLocationEnabled: true,
                       mapType: MapType.normal,
                       zoomGesturesEnabled: true,
                       markers: Set<Marker>.of(markers),
+                      polylines: _polylines,
+                      onMapCreated: (GoogleMapController controller) {
+                        void setPolylines() async {
+                          PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+                              googleAPIKey,
+                              PointLatLng(
+                                currentPosition.latitude,
+                                currentPosition.longitude
+                              ),
+                              PointLatLng(
+                                places[10].geometry.location.lat,
+                                places[10].geometry.location.lng
+                              )
+                          );
+                          if (result.status == 'OK') {
+                            result.points.forEach((PointLatLng point) {
+                              polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+                            });
+                            setState(() {
+                              _polylines.add(
+                                Polyline(
+                                  width: 10,
+                                  polylineId: PolylineId('polyLine'),
+                                  color: Colors.orange,
+                                  points: polylineCoordinates
+                                )
+                              );
+                            });
+                          }
+                        }
+                        setPolylines();
+                      },
                       //{if(_currentPosition != null) _currentPosition},
                     ),
                     Container(

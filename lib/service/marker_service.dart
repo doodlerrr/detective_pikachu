@@ -15,9 +15,9 @@ class MarkerService {
         markerId: MarkerId(place.name),
         draggable: false,
         infoWindow: InfoWindow(
-          title: '${place.name} (재고: ${random.nextInt(5)})',
+          title: '${place.name} '
+              '(재고: ${random.nextInt(5)})',
           snippet:  place.vicinity,
-
         ),
         position: LatLng(place.geometry.location.lat, place.geometry.location.lng),
       );

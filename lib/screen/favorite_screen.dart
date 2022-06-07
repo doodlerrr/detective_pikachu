@@ -1,5 +1,6 @@
 // @dart=2.9
 import 'package:flutter/material.dart';
+//import 'package:detective_pikachu/screen/location_screen.dart';
 
 class FavoriteWordsRoute extends StatelessWidget {
   final List<String> favoriteItems;
@@ -17,7 +18,7 @@ class FavoriteWordsRoute extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '  찜한 스토어 ',
+                ' 찜한 스토어 ',
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
@@ -25,9 +26,9 @@ class FavoriteWordsRoute extends StatelessWidget {
                 textAlign: TextAlign.left ,
               ),
               Text(
-                '  현재 찜한 스토어 ${favoriteItems.length}개',
+                '     현재 찜한 스토어 ${favoriteItems.length}개',
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 15,
                   color: Colors.grey
                 ),
               )
@@ -85,18 +86,20 @@ class FavoriteWordsRoute extends StatelessWidget {
               backgroundColor: Colors.yellow,
               foregroundColor: Colors.black,
               onPressed: (){
+                DefaultTabController.of(context).animateTo(0);
               },
           )
           : FloatingActionButton.extended (
               label: Text(
                 '                       찜하러 가기                     ',
                 style: TextStyle(fontSize: 17),
-
               ),
               backgroundColor: Colors.yellow,
               foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(side: BorderSide(color: Colors.yellow)),
               onPressed: (){
-
+                DefaultTabController.of(context).animateTo(0);
+                //Navigator.of(context).push(MaterialPageRoute(builder:  (context)=> Location()));
               },
       ),
     );

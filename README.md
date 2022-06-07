@@ -2,15 +2,42 @@
 
 포켓몬 빵을 찾아라!
 
-## Getting Started
+## 프로그램 개요 및 설명
+앱을 실행해 현재 자신의 위치와 가장 가까운 가게의 포켓몬 빵 재고를 알아 보세요.
 
-This project is a starting point for a Flutter application.
+## 전체 구조도 설명
 
-A few resources to get you started if this is your first Flutter project:
+## 실행 화면
+1. Splash screen
+   - 앱의 처음 시작 화면
+   - 색상 #FEEB70
+     <img src="images/splash1.png" width="450px" height="300px" title="px(픽셀) 크기 설정" alt="RubberDuck"></img><br/>
+   
+2. Location screen
+   - 사용자 위치 정보가 꺼져있을 때
+   - 사용자 위치 정보가 켜져있을 때
+3. 
+4. favorite screen
+   - 
+5. fourth screen
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 주요 기능 설명
+1. 주변 상점 정보 불러 오기 기능
+   - 사용자 기기 위치 값을 얻어 주변 상점 정보를 불러 옵니다.
+   - 사용자에게 리스트 형식으로 불러온 정보를 제공 합니다.
+   - 
+2. 마커 기능 및 재고 
+   - 지도 위에 마커 표시를 해 상점 위치 정보를 시각적으로 제공합니다.
+   - 마커를 클릭하면 재고 정보를 표시합니다.
+   -
+3. 실시간 위치 표시 기능
+   - 지도 위 지신의 위치와 가장 가까운 가게를 찾아보세요.
+   
+4. 상점 찜하기 기능
+   - 상점 찜하기 기능을 제공합니다.
+   
+5. 캐릭터 찜하기 기능
+   -캐릭터 찜하기 기능을 제공합니다.
+6.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
